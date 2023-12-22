@@ -43,11 +43,13 @@
                     <td>{{ $data['createdAt'] }}</td>
                     <td>{{ $data['statusSurat'] }}</td>
                     <td>
-                        <form action="{{ route('updateSuratDomisili', ['key' => $data['key']]) }}" method="POST" id="updateForm">
+                    <form action="{{ route('updateSuratDomisili', ['key' => $data['key']]) }}" method="POST" id="updateForm">
     @csrf
     @method('PATCH')
-    <button type="submit" name="status" value="1" id="terimaButton" class="btn btn-success {{ $data['statusSurat'] ? 'active' : '' }}">Terima</button>
-    <button type="submit" name="status" value="0" id="tolakButton" class="btn btn-danger {{ !$data['statusSurat'] ? 'active' : '' }}">Tolak</button>
+    @if($data['statusSurat'] == 'Proses')
+        <button type="submit" name="status" value="1" id="terimaButton" class="btn btn-success {{ $data['statusSurat'] == 'Terima' ? 'active' : '' }}">Terima</button>
+        <button type="submit" name="status" value="0" id="tolakButton" class="btn btn-danger {{ $data['statusSurat'] == 'Tolak' ? 'active' : '' }}">Tolak</button>
+    @endif
 </form>
 
                     </td>
@@ -56,11 +58,6 @@
             </tbody>
         </table>
 </div>
-<script>
-        document.getElementById('updateForm').addEventListener('submit', function() {
-            document.getElementById('terimaButton').style.display = 'none';
-            document.getElementById('tolakButton').style.display = 'none';
-        });
-    </script>
+
 @endsection
     
