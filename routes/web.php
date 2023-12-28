@@ -29,8 +29,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/laporan', [UserController::class, 'laporan'])->name('laporan');
 
-Route::get('/surat', [UserController::class, 'surat'])->name('surat');
-Route::get('/detail_surat', [UserController::class, 'detail_surat'])->name('detail_surat');
+
 
 Route::get('/surat_domisili', [UserController::class, 'surat_domisili'])->name('surat_domisili');
 Route::patch('updateSuratDomisili/{key}', [UserController::class, 'updateSuratDomisili'])

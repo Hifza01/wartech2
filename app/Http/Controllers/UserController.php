@@ -7,8 +7,7 @@ use Kreait\Firebase\Factory;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth');
     }
     /**
@@ -22,8 +21,7 @@ class UserController extends Controller
         return $firebase->createDatabase();
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $this->connect()->getReference('surat')->push($request->except(['_token']));
         return redirect()->route('surat');
     }
@@ -42,7 +40,7 @@ class UserController extends Controller
                     'key' => $userId . '/' . $key,
                     'jenisSurat' => $item['jenisSurat'] ?? null,
                     'createdAt' => $item['createdAt'] ?? null,
-                    'status' => $item['status'] ?? null,
+                    'statusSurat' => $item['statusSurat'] ?? null,
                     'nama' => $item['nama'] ?? null,
                     'nik' => $item['nik'] ?? null,
                     'noHP' => $item['noHP'] ?? null,
@@ -56,34 +54,6 @@ class UserController extends Controller
             'surat' => $surat
         ]);
     }    
-
-    public function surat() {
-        $users = $this->connect()->getReference('surat')->getSnapshot()->getValue();
-
-        $surat = [];
-        foreach ($users as $user) {
-            foreach ($user as $item) {
-                $surat[] = [
-                    'jenisSurat' => $item['jenisSurat'] ?? null,
-                    'createdAt' => $item['createdAt'] ?? null,
-                    'status' => $item['status'] ?? null,
-                    'nama' => $item['nama'] ?? null,
-                    'tempatTanggalLahir' => $item['tempatTanggalLahir'] ?? null,
-                    'nik' => $item['nik'] ?? null,
-                    'pekerjaan' => $item['pekerjaan'] ?? null,
-                    'agama' => $item['agama'] ?? null,
-                    'statusPerkawinan' => $item['statusPerkawinan'] ?? null,
-                    'kewarganegaraan' => $item['kewarganegaraan'] ?? null,
-                    'alamatAsal' => $item['alamatAsal'] ?? null,
-                    'alamatSekarang' => $item['alamatSekarang'] ?? null,
-                ];
-            }
-        }
-
-        return view('surat')->with([
-            'surat' => $surat
-        ]);
-    }
 
     public function surat_domisili() {
         $users = $this->connect()->getReference('surat')->getSnapshot()->getValue();
@@ -139,7 +109,7 @@ class UserController extends Controller
                     'namaLengkapAyah' => $item['namaLengkapAyah'] ?? null,
                     'tempatTanggalLahirAyah' => $item['tempatTanggalLahirAyah'] ?? null,
                     'agamaAyah' => $item['agamaAyah'] ?? null,
-                    'status' => $item['status'] ?? null,
+                    'statusSurat' => $item['statusSurat'] ?? null,
                     'createdAt' => $item['createdAt'] ?? null,
                     'jenisSurat' => $item['jenisSurat'] ?? null,
                 ];
@@ -178,7 +148,7 @@ class UserController extends Controller
                     'tanggalMeninggal' => $item['tanggalMeninggal'] ?? null,
                     'tempatMeninggal' => $item['tempatMeninggal'] ?? null,
                     'penyebabMeninggal' => $item['penyebabMeninggal'] ?? null,
-                    'status' => $item['status'] ?? null,
+                    'statusSurat' => $item['statusSurat'] ?? null,
                     'createdAt' => $item['createdAt'] ?? null,
                     'jenisSurat' => $item['jenisSurat'] ?? null,
                 ];
@@ -191,66 +161,19 @@ class UserController extends Controller
     }
 
     public function updateSuratDomisili(Request $request, $key) {
-    $statusSurat = $request->input('status') == '1' ? 'Terima' : 'Tolak';
-    $this->connect()->getReference('surat/' . $key)->update([
-        'statusSurat' => $statusSurat
-    ]);
-
-    return redirect()->back();
-}
-
-    public function edit($id)
-    {
-        $users = $this->connect()->getReference('surat')->getChild($id)->getValue();
-        $status = $this->connect()->getReference('surat')->getChild($id)->getValue();
-
-        $surat = [];
-        foreach ($users as $userId => $user) {
-            foreach ($user as $key => $item) {
-                if (!is_array($item) || !isset($item['jenisSurat']) || $item['jenisSurat'] != 'Surat Kematian') {
-                    continue;
-                }
-    
-                $surat[] = [
-                    'key' => $userId . '/' . $key,
-                    'jenisSurat' => $item['jenisSurat'] ?? null,
-                    'createdAt' => $item['createdAt'] ?? null,
-                    'status' => $item['status'] ?? null,
-                    'nama' => $item['nama'] ?? null,
-                    'tempatTanggalLahir' => $item['tempatTanggalLahir'] ?? null,
-                    'nik' => $item['nik'] ?? null,
-                    'pekerjaan' => $item['pekerjaan'] ?? null,
-                    'agama' => $item['agama'] ?? null,
-                    'statusPerkawinan' => $item['statusPerkawinan'] ?? null,
-                    'kewarganegaraan' => $item['kewarganegaraan'] ?? null,
-                    'alamatAsal' => $item['alamatAsal'] ?? null,
-                    'alamatSekarang' => $item['alamatSekarang'] ?? null,
-                ];
-            }
-        }
-
-        return view('detail_surat')->with([
-            'surat' => $surat,
-            'id' => $id,
-            'status' => $status
+        $statusSurat = $request->input('status') == '1' ? 'Terima' : 'Tolak';
+        $this->connect()->getReference('surat/' . $key)->update([
+            'statusSurat' => $statusSurat
         ]);
-    }
 
-
-
-
-    public function update($id, Request $request)
-    {
-        $this->connect()->getReference('surat/' . $id)->update($request->except(['_token', '_method']));
-        return redirect()->route('surat');
-    }
+        return redirect()->back();
+    }   
 
     public function destroy($id) {
-    $firebase = $this->connect();
-    $documentRef = $firebase->getReference('surat/' . $id);
-    $documentRef->remove();
+        $firebase = $this->connect();
+        $documentRef = $firebase->getReference('surat/' . $id);
+        $documentRef->remove();
 
-    return back();
-}
-
+        return back();
+    }
 }

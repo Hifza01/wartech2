@@ -45,13 +45,16 @@
                     <td>{{ $data['penyebabMeninggal'] }}</td>
                     
                     
-                    <td>{{ $data['status'] ? 'Diterima' : 'Ditolak' }}</td>
+                    <td>{{ $data['statusSurat'] }}</td>
                     <td>
-                        <form action="{{ route('updateSuratDomisili', ['key' => $data['key']]) }}" method="POST">
+                        <form action="{{ route('updateSuratDomisili', ['key' => $data['key']]) }}" method="POST" id="updateForm">
     @csrf
     @method('PATCH')
-    <button type="submit" name="status" value="1" class="btn btn-success {{ $data['status'] ? 'active' : '' }}">Terima</button>
-    <button type="submit" name="status" value="0" class="btn btn-danger {{ !$data['status'] ? 'active' : '' }}">Tolak</button>
+    @if($data['statusSurat'] == 'Proses')
+
+    <button type="submit" name="status" value="1" id="terimaButton" class="btn btn-success {{ $data['statusSurat'] ? 'active' : '' }}">Terima</button>
+    <button type="submit" name="status" value="0" id="tolakButton" class="btn btn-danger {{ !$data['statusSurat'] ? 'active' : '' }}">Tolak</button>
+    @endif
 </form>
                     </td>
                 </tr>

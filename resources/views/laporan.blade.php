@@ -37,17 +37,18 @@
                         @endif
                     </td>
                     <td>{{ $data['createdAt'] }}</td>
-                    <td>{{ $data['status'] ? 'Diterima' : 'Ditolak'  }}</td>
+                    <td>{{ $data['statusSurat'] }}</td>
                     <td>
-                        <form action="{{ route('updateSuratDomisili', ['key' => $data['key']]) }}" method="POST">
-    @csrf
-    @method('PATCH')
-    <button type="submit" name="status" value="1" class="btn btn-success {{ $data['status'] ? 'active' : '' }}">Terima</button>
-    <button type="submit" name="status" value="0" class="btn btn-danger {{ !$data['status'] ? 'active' : '' }}">Tolak</button>
-</form>
-                        <a href="" class="btn btn-warning btn-sm btn-rouneded">Hapus</a>
-                    </td>
-                    
+                        <form action="{{ route('updateSuratDomisili', ['key' => $data['key']]) }}" method="POST" id="updateForm">
+                            @csrf
+                            @method('PATCH')
+                            @if($data['statusSurat'] == 'Proses')
+                            <button type="submit" name="status" value="1" id="terimaButton" class="btn btn-success {{ $data['statusSurat'] ? 'active' : '' }}">Terima</button>
+                            <button type="submit" name="status" value="0" id="tolakButton" class="btn btn-danger {{ !$data['statusSurat'] ? 'active' : '' }}">Tolak</button>
+                            @endif
+                        </form>
+                        
+                    </td>                    
                 </tr>
                 @endforeach
             </tbody>
